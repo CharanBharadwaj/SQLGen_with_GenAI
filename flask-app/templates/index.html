@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Natural Language to SQL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script> 
+</head>
+<body>
+    <div class="container">
+        <h1>Natural Language to SQL Converter</h1>
+        <form method="POST">
+            <h4>Query:</h4>
+            <textarea name="query" rows="5" placeholder="Enter your query." required></textarea>
+            <h4>Table Schema:</h4>
+            <textarea name="schema" rows="5" placeholder="CREATE TABLE <tablename>..." required></textarea>
+            <h6 class='h6-info'>(Comma Separated Entries of Create Table Statements)</h6>
+            <button type="submit">Generate SQL</button>
+        </form>
+        {% if sql_output %}
+        <div id='results'>
+        <div class="info-section">
+            <h3>
+               Input Query
+               <span class="info-icon" onclick="toggleInfo()">&#9432;</span> <!-- Unicode for Info Icon -->
+            </h3>
+            <div class="info-paragraph" id="infoParagraph">
+               {{input_query|safe}}
+            </div>
+        </div>
+        <script>
+            function toggleInfo() {
+                var infoParagraph = document.getElementById("infoParagraph");
+                if (infoParagraph.style.display === "none") {
+                    infoParagraph.style.display = "block"; // Show paragraph
+                } else {
+                    infoParagraph.style.display = "none"; // Hide paragraph
+                }
+            }
+        </script>
+
+        <h3>Generated SQL:</h3>
+         <div class="output">
+            <pre><code class='sql'>{{ sql_output|safe }}</code></pre>
+         </div>
+          <script>hljs.highlightAll();</script>
+        <br/>
+
+        <div>
+            {{additional_info|safe}}
+        </div>
+        <button onclick="resetVariable()">Clear</button>
+        </div>
+        <script>
+            function resetVariable() {
+                var results = document.getElementById("results");
+                //onsole.log(results);
+                if (results.hidden === false) {
+                    results.hidden = true;
+                }
+            }
+        </script>
+        {% endif %}
+    </div>
+</body>
+</html>
